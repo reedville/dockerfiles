@@ -1,0 +1,19 @@
+version: '2'
+services:
+  xfce-vpn-vnc:
+    build: .
+    net: container:vpn
+  vpn:
+    image: jess/openvpn
+    volumes:
+      - .:/etc/openvpn
+      - /etc/resolv.conf:/etc/resolv.conf
+    net: host
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+
+volumes:
+  xfcehome:
+    driver: rancher-nfs
