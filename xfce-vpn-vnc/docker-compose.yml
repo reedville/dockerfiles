@@ -1,23 +1,48 @@
 version: '2'
+
 services:
-  xfce-vpn-vnc:
-    build: .
-    net: container:vpn
-  vnc:
-    image: dougw/novnc
+  xfce:
+    build: https://github.com/reedville/dockerfiles.git#master:xfce-vpn-vnc
+    depends_on:
+      - vpn
+    network_mode: container:vpn
     ports:
-    - 8081:8081
+      - 5901:5901
+    volumes:
+      - xfcedownloads:/headless/Downloads
+    labels:
+      io.rancher.sidekicks: vpn
+
   vpn:
     image: jess/openvpn
+    command: client.ovpn
     volumes:
-      - .:/etc/openvpn
+      - vpnconfig:/etc/openvpn
       - /etc/resolv.conf:/etc/resolv.conf
-    net: host
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
       - NET_ADMIN
+    networks:
+      - default
+
+  vnc:
+    image: dougw/novnc
+    environment:
+      REMOTE_HOST: xfce
+      REMOTE_PORT: 5901
+    links:
+      - vpn:xfce
+    networks:
+      - default
+    ports:
+      - 8081:8081
+
+networks:
+  default:
 
 volumes:
-  xfcehome:
+  vpnconfig:
+    driver: rancher-nfs
+  xfcedownloads:
     driver: rancher-nfs
