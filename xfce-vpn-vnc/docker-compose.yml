@@ -3,6 +3,10 @@ services:
   xfce-vpn-vnc:
     build: .
     net: container:vpn
+  vnc:
+    image: dougw/novnc
+    ports:
+    - 8081:8081
   vpn:
     image: jess/openvpn
     volumes:
