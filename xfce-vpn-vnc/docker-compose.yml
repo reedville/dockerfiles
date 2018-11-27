@@ -2,7 +2,7 @@ version: '2'
 
 services:
   xfce:
-    build: https://github.com/reedville/dockerfiles.git#master:xfce-vpn-vnc
+    build: .
     depends_on:
       - vpn
     network_mode: container:vpn
