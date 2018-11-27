@@ -1,2 +1,8 @@
 FROM consol/ubuntu-xfce-vnc
-RUN ifconfig eth0 mtu 1492
+
+USER 0
+RUN apt-get update
+RUN apt-get install -y deluge
+RUN apt-get clean -y
+
+USER 1000
